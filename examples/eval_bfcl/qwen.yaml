@@ -1,0 +1,14 @@
+### Model arguments
+model_name_or_path: /data/model/modelweight/Qwen3-4B-Thinking-2507-FC
+
+### Evaluation arguments
+task: bfcl
+save_dir: ./bfcl_results/qwen3_4b_simple
+
+### BFCL specific arguments
+bfcl_category: simple  # simple, multiple, parallel, composite, executable, all
+bfcl_port: 8000
+bfcl_api_base: http://localhost
+bfcl_temperature: 0.0
+bfcl_max_tokens: 1024
+bfcl_run_mode: direct  # direct or python
