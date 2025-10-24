@@ -41,7 +41,7 @@ class LlamaFactoryQwenHandler(OpenAICompletionsHandler):
         super().__init__(model_name, temperature, registry_name, is_fc_model, **kwargs)
         self.model_style = ModelStyle.OPENAI_COMPLETIONS
         
-        self.base_url = base_url or os.getenv("LLAMAFACTORY_BASE_URL", "http://localhost:8000/v1")
+        self.base_url = base_url or os.getenv("LLAMAFACTORY_BASE_URL", "http://localhost:4444/v1")
         self.api_key = api_key or os.getenv("LLAMAFACTORY_API_KEY", "dummy")
         
         self.client = OpenAI(
