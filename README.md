@@ -1,4 +1,3 @@
-<img width="741" height="499" alt="image" src="https://github.com/user-attachments/assets/cfb19985-d080-44b9-9459-38fc7f9413e0" /># Llama-Factory-BFCL
 ## 项目简介
 本项目将 Berkeley Function Calling Leaderboard (BFCL) 评测工具集成到 LlamaFactory 中，实现了从模型训练到函数调用能力评估的完整工作流。用户可以直接通过 llamafactory-cli 命令运行 BFCL 评测，无需手动切换工具或环境。
 
@@ -115,4 +114,7 @@ bashllamafactory-cli bfcl \
 --bfcl_result_dirstr  ``   自定义结果目录
 
 --bfcl_score_dirstr  ``  自定义评分目录
+
+<img width="749" height="653" alt="image" src="https://github.com/user-attachments/assets/c2257697-d7b5-4ade-8e69-b15b85fbf97c" />
+
 
