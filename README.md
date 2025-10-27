@@ -60,7 +60,7 @@ llamafactory-cli api \
 ```
 llamafactory-cli bfcl \
     --model_name_or_path /path/to/Qwen3-4B-Thinking-2507-FC \
-    --bfcl_category simple \
+    --bfcl_category multiple \
     --bfcl_port 4444 \
     --bfcl_stage all  # 可选，默认就是 all
 ```
@@ -70,7 +70,7 @@ llamafactory-cli bfcl \
 ```
 llamafactory-cli bfcl \
     --model_name_or_path /path/to/Qwen3-4B-Thinking-2507-FC \
-    --bfcl_category simple \
+    --bfcl_category multiple \
     --bfcl_port 4444 \
     --bfcl_stage generate
 ```
@@ -79,14 +79,14 @@ llamafactory-cli bfcl \
 ```
 llamafactory-cli bfcl \
     --model_name_or_path /path/to/Qwen3-4B-Thinking-2507-FC \
-    --bfcl_category simple \
+    --bfcl_category multiple \
     --bfcl_stage evaluate
 ```
 第三步：查看分数
 ```
 llamafactory-cli bfcl \
     --model_name_or_path /path/to/Qwen3-4B-Thinking-2507-FC \
-    --bfcl_category simple \
+    --bfcl_category multiple \
     --bfcl_stage scores
 ```
 
