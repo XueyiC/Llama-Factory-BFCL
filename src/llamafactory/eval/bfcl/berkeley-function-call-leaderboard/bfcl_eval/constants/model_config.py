@@ -912,7 +912,7 @@ api_inference_model_map = {
     "/data/model/modelweight/Qwen3-4B-Thinking-2507-FC": ModelConfig(
         model_name="/data/model/modelweight/Qwen3-4B-Thinking-2507-FC",
         display_name="Qwen3-4B (Thinking FC)",
-        url="http://10.0.5.74:4444",
+        url="http://10.0.5.74:8000",
         org="Qwen",
         license="apache-2.0",
         model_handler=LlamaFactoryQwenHandler,

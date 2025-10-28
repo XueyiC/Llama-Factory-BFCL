@@ -38,23 +38,25 @@ pip install -r requirements_all.txt
 
 ```
 API_PORT=4444 llamafactory-cli api \
-    --model_name_or_path /path/to/Qwen3-4B-Thinking-2507-FC \
+    --model_name_or_path /path/to/model \
     --template qwen3 \
     --infer_backend vllm
+```
 
 或者使用配置文件
 
 ```API_PORT=4444 llamafactory-cli api examples/inference/qwen3_thinking.yaml```
 
-目前需要手动修改文件：Llama-Factory-BFCL/src/llamafactory/eval/bfcl/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/llamafactory_qwen.py，44行，改为实际启动API的端口
 
 2. 运行 BFCL 评测
    
-2.1 完整流程（Generate + Evaluate + Scores）
+2.1 完整流程（Generate + Evaluate）
+
+目前需手动将BFCL框架中 model_config.py文件 912行和913行的 model name 改为和上一步骤启动Llama Factory 模型的路径，如果模型支持Function Calling模式，需在末尾加上 -FC （文件位置：Llama-Factory-BFCL/src/llamafactory/eval/bfcl/berkeley-function-call-leaderboard/bfcl_eval/constants/model_config.py）
 
 ```
 llamafactory-cli bfcl \
-    --model_name_or_path /path/to/Qwen3-4B-Thinking-2507-FC \
+    --model_name_or_path /path/to/model \
     --bfcl_category multiple \
     --bfcl_port 4444 \
     --bfcl_stage all  # 可选，默认就是 all
@@ -64,30 +66,25 @@ llamafactory-cli bfcl \
 第一步：生成响应
 ```
 llamafactory-cli bfcl \
-    --model_name_or_path /path/to/Qwen3-4B-Thinking-2507-FC \
+    --model_name_or_path /path/to/model \
     --bfcl_category multiple \
     --bfcl_port 4444 \
     --bfcl_stage generate
 ```
 
 第二步：评估结果（API 服务器可以关闭）
+
 ```
 llamafactory-cli bfcl \
-    --model_name_or_path /path/to/Qwen3-4B-Thinking-2507-FC \
+    --model_name_or_path /path/to/model \
     --bfcl_category multiple \
     --bfcl_stage evaluate
 ```
-第三步：查看分数
-```
-llamafactory-cli bfcl \
-    --model_name_or_path /path/to/Qwen3-4B-Thinking-2507-FC \
-    --bfcl_category multiple \
-    --bfcl_stage scores
-```
+
 
 ## 参数详解
 必需参数
-参数  --model_name_or_path   模型路径或名称/path/to/model 或 Qwen/Qwen2.5-7B
+参数  --model_name_or_path   模型路径或名称/path/to/model 
 
 可选参数
 --bfcl_stagestrall执行阶段：all, generate, evaluate, scores 
