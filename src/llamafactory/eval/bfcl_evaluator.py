@@ -67,11 +67,15 @@ class BFCLEvaluator:
     def _setup_environment(self) -> Dict[str, str]:
         """设置环境变量"""
         env = os.environ.copy()
+        base_url = f"{self.api_base}:{self.port}/v1"
         
         # BFCL 需要的环境变量
-        env["OPENAI_API_BASE"] = f"{self.api_base}:{self.port}/v1"
+        env["OPENAI_API_BASE"] = base_url
         env["OPENAI_API_KEY"] = "EMPTY"
-        # env["LLAMAFACTORY_MODEL_NAME"] = "gpt-3.5-turbo"
+        
+        env["LLAMAFACTORY_BASE_URL"] = base_url
+        env["LLAMAFACTORY_API_KEY"] = "EMPTY"
+        env["LLAMAFACTORY_PORT"] = str(self.port)
         
         # 项目根目录
         env["BFCL_PROJECT_ROOT"] = str(self.bfcl_root)
@@ -243,7 +247,7 @@ class BFCLEvaluator:
             return {"status": "failed", "stage": "evaluate", "error": "Evaluate failed"}
         
         # 3. Show scores
-        self.show_scores()
+        # self.show_scores()
         
         # 计算实际路径
         model_safe_name = self.model_name.replace("/", "_").replace("\\", "_")

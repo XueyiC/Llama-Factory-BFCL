@@ -41,8 +41,25 @@ class LlamaFactoryQwenHandler(OpenAICompletionsHandler):
         super().__init__(model_name, temperature, registry_name, is_fc_model, **kwargs)
         self.model_style = ModelStyle.OPENAI_COMPLETIONS
         
-        self.base_url = base_url or os.getenv("LLAMAFACTORY_BASE_URL", "http://localhost:4444/v1")
-        self.api_key = api_key or os.getenv("LLAMAFACTORY_API_KEY", "dummy")
+        # self.base_url = base_url or os.getenv("LLAMAFACTORY_BASE_URL", "http://localhost:4444/v1")
+        
+        # ✅ 优先级：参数 > LLAMAFACTORY_BASE_URL > LLAMAFACTORY_PORT 构建 > 默认值
+        if base_url:
+            # 优先使用传入的参数
+            self.base_url = base_url
+        elif os.getenv("LLAMAFACTORY_BASE_URL"):
+            # 使用环境变量中的完整 URL
+            self.base_url = os.getenv("LLAMAFACTORY_BASE_URL")
+        elif os.getenv("LLAMAFACTORY_PORT"):
+            # 使用端口号构建 URL
+            port = os.getenv("LLAMAFACTORY_PORT")
+            api_base = os.getenv("LLAMAFACTORY_API_BASE", "http://localhost")
+            self.base_url = f"{api_base}:{port}/v1"
+        else:
+            # 默认值
+            self.base_url = "http://localhost:8000/v1"
+            
+        self.api_key = api_key or os.getenv("LLAMAFACTORY_API_KEY", "EMPTY")
         
         self.client = OpenAI(
             base_url=self.base_url,
@@ -59,9 +76,9 @@ class LlamaFactoryQwenHandler(OpenAICompletionsHandler):
         # Pattern to match thinking content between  tags
         # pattern = r"(.*?)"
         pattern = r"<think>(.*?)</think>"
-        match = re.search(pattern, content, re.DOTALL)
+        matches = re.findall(pattern, content, re.DOTALL)
         
-        if match:
+        if matches:
             # reasoning_content = match.group(1).strip()
             # # Remove the thinking content from the main content
             # clean_content = re.sub(pattern, "", content, flags=re.DOTALL).strip()

@@ -16,40 +16,35 @@
 
 安装环境
 
-1. 安装 BFCL 环境
-```
-conda create -n LlamaFactory_BFCL python=3.10
-conda activate LlamaFactory_BFCL
-
-git clone https://github.com/XueyiC/Llama-Factory-BFCL.git
-
-cd Llama-Factory-BFCL/src/llamafactory/eval/bfcl/berkeley-function-call-leaderboard
-
-pip install -e .
+1. 创建环境 
+``` conda create -n llamafactory_bfcl python=3.10 
+conda activate llamafactory_bfcl  
 ```
 
+2. 克隆仓库（如果还没有）
+``` 
+git clone https://github.com/XueyiC/Llama-Factory-BFCL.git 
+```
 
-2. 安装 Llama Factory 环境
+3. 安装环境
+``` 
+pip install -r requirements_all.txt
 ```
-cd Llama-Factory-BFCL
-pip install -e ".[torch,metrics]" --no-build-isolation
-```
+
 
 完整工作流程
 
 1. 用原生llama factory 方式启动模型 API 服务器
 
 ```
-llamafactory-cli api \
+API_PORT=4444 llamafactory-cli api \
     --model_name_or_path /path/to/Qwen3-4B-Thinking-2507-FC \
     --template qwen3 \
-    --port 4444 \
-    --infer_backend huggingface
-```
+    --infer_backend vllm
 
 或者使用配置文件
 
-```llamafactory-cli api examples/inference/qwen3_thinking.yaml```
+```API_PORT=4444 llamafactory-cli api examples/inference/qwen3_thinking.yaml```
 
 目前需要手动修改文件：Llama-Factory-BFCL/src/llamafactory/eval/bfcl/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/llamafactory_qwen.py，44行，改为实际启动API的端口
 
