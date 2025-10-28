@@ -1,4 +1,3 @@
-<img width="741" height="499" alt="image" src="https://github.com/user-attachments/assets/cfb19985-d080-44b9-9459-38fc7f9413e0" /># Llama-Factory-BFCL
 ## 项目简介
 本项目将 Berkeley Function Calling Leaderboard (BFCL) 评测工具集成到 LlamaFactory 中，实现了从模型训练到函数调用能力评估的完整工作流。用户可以直接通过 llamafactory-cli 命令运行 BFCL 评测，无需手动切换工具或环境。
 
@@ -11,6 +10,112 @@
 灵活的阶段控制：支持分阶段执行（generate、evaluate、scores）或完整流程
 
 参数透传机制：LlamaFactory 的参数直接映射到 BFCL 命令
+
+
+## 使用指南
+
+安装环境
+
+1. 安装 BFCL 环境
+```
+conda create -n LlamaFactory_BFCL python=3.10
+conda activate LlamaFactory_BFCL
+
+git clone https://github.com/XueyiC/Llama-Factory-BFCL.git
+
+cd Llama-Factory-BFCL/src/llamafactory/eval/bfcl/berkeley-function-call-leaderboard
+
+pip install -e .
+```
+
+
+2. 安装 Llama Factory 环境
+```
+cd Llama-Factory-BFCL
+pip install -e ".[torch,metrics]" --no-build-isolation
+```
+
+完整工作流程
+
+1. 用原生llama factory 方式启动模型 API 服务器
+
+```
+llamafactory-cli api \
+    --model_name_or_path /path/to/Qwen3-4B-Thinking-2507-FC \
+    --template qwen3 \
+    --port 4444 \
+    --infer_backend huggingface
+```
+
+或者使用配置文件
+
+```llamafactory-cli api examples/inference/qwen3_thinking.yaml```
+
+目前需要手动修改文件：Llama-Factory-BFCL/src/llamafactory/eval/bfcl/berkeley-function-call-leaderboard/bfcl_eval/model_handler/api_inference/llamafactory_qwen.py，44行，改为实际启动API的端口
+
+2. 运行 BFCL 评测
+   
+2.1 完整流程（Generate + Evaluate + Scores）
+
+```
+llamafactory-cli bfcl \
+    --model_name_or_path /path/to/Qwen3-4B-Thinking-2507-FC \
+    --bfcl_category multiple \
+    --bfcl_port 4444 \
+    --bfcl_stage all  # 可选，默认就是 all
+```
+
+2.2 分阶段运行
+第一步：生成响应
+```
+llamafactory-cli bfcl \
+    --model_name_or_path /path/to/Qwen3-4B-Thinking-2507-FC \
+    --bfcl_category multiple \
+    --bfcl_port 4444 \
+    --bfcl_stage generate
+```
+
+第二步：评估结果（API 服务器可以关闭）
+```
+llamafactory-cli bfcl \
+    --model_name_or_path /path/to/Qwen3-4B-Thinking-2507-FC \
+    --bfcl_category multiple \
+    --bfcl_stage evaluate
+```
+第三步：查看分数
+```
+llamafactory-cli bfcl \
+    --model_name_or_path /path/to/Qwen3-4B-Thinking-2507-FC \
+    --bfcl_category multiple \
+    --bfcl_stage scores
+```
+
+## 参数详解
+必需参数
+参数  --model_name_or_path   模型路径或名称/path/to/model 或 Qwen/Qwen2.5-7B
+
+可选参数
+--bfcl_stagestrall执行阶段：all, generate, evaluate, scores 
+
+--bfcl_category  str  multiple 测试类别
+
+--bfcl_port  int 8000 API 服务器端口
+
+--bfcl_api_base  str  http://localhostAPI 基础 URL
+
+--bfcl_num_threads int  1  并行线程数
+
+--bfcl_include_input_logflag False 包含详细输入日志
+
+--bfcl_run_idsflag  False 使用 test_case_ids_to_generate.json
+
+--bfcl_partial_evalflag  False  部分评估模式
+
+--bfcl_result_dirstr  ``   自定义结果目录
+
+--bfcl_score_dirstr  ``  自定义评分目录
+
+<img width="749" height="653" alt="image" src="https://github.com/user-attachments/assets/c2257697-d7b5-4ade-8e69-b15b85fbf97c" />
 
 ## 新增文件
 1. src/llamafactory/eval/bfcl_evaluator.py ⭐️ 核心文件
@@ -44,75 +149,3 @@ run_full_evaluation(): 执行完整流程
 提取和处理 <think> 标签内容
 
 支持 function calling
-
-## 使用指南
-
-完整工作流程
-
-1. 用原生llama factory 方式启动模型 API 服务器
-
-llamafactory-cli api \
-    --model_name_or_path /path/to/Qwen3-4B-Thinking-2507-FC \
-    --template qwen3 \
-    --port 4444 \
-    --infer_backend huggingface
-
-或者使用配置文件
-
-llamafactory-cli api examples/inference/qwen3_thinking.yaml
-
-2. 运行 BFCL 评测
-   
-2.1 完整流程（Generate + Evaluate + Scores）
-
-bashllamafactory-cli bfcl \
-    --model_name_or_path /path/to/Qwen3-4B-Thinking-2507-FC \
-    --bfcl_category simple \
-    --bfcl_port 4444 \
-    --bfcl_stage all  # 可选，默认就是 all
-    
-2.2 分阶段运行
-第一步：生成响应
-bashllamafactory-cli bfcl \
-    --model_name_or_path /path/to/Qwen3-4B-Thinking-2507-FC \
-    --bfcl_category simple \
-    --bfcl_port 4444 \
-    --bfcl_stage generate
-    
-第二步：评估结果（API 服务器可以关闭）
-bashllamafactory-cli bfcl \
-    --model_name_or_path /path/to/Qwen3-4B-Thinking-2507-FC \
-    --bfcl_category simple \
-    --bfcl_stage evaluate
-
-第三步：查看分数
-bashllamafactory-cli bfcl \
-    --model_name_or_path /path/to/Qwen3-4B-Thinking-2507-FC \
-    --bfcl_category simple \
-    --bfcl_stage scores
-
-## 参数详解
-必需参数
-参数  --model_name_or_path   模型路径或名称/path/to/model 或 Qwen/Qwen2.5-7B
-
-可选参数
---bfcl_stagestrall执行阶段：all, generate, evaluate, scores 
-
---bfcl_category  str  multiple 测试类别
-
---bfcl_portint 8000 API 服务器端口
-
---bfcl_api_base  str  http://localhostAPI 基础 URL
-
---bfcl_num_threads int  1  并行线程数
-
---bfcl_include_input_logflag False 包含详细输入日志
-
---bfcl_run_idsflag  False 使用 test_case_ids_to_generate.json
-
---bfcl_partial_evalflag  False  部分评估模式
-
---bfcl_result_dirstr  ``   自定义结果目录
-
---bfcl_score_dirstr  ``  自定义评分目录
-
