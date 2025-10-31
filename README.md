@@ -17,7 +17,9 @@
 安装环境
 
 1. 创建环境 
-``` conda create -n llamafactory_bfcl python=3.10 
+```
+conda create -n llamafactory_bfcl python=3.10 
+
 conda activate llamafactory_bfcl  
 ```
 
@@ -37,7 +39,7 @@ pip install -r requirements_all.txt
 1. 用原生llama factory 方式启动模型 API 服务器
 
 ```
-API_PORT=4444 llamafactory-cli api \
+API_PORT=8000 llamafactory-cli api \
     --model_name_or_path /path/to/model \
     --template qwen3 \
     --infer_backend vllm
@@ -45,7 +47,7 @@ API_PORT=4444 llamafactory-cli api \
 
 或者使用配置文件
 
-```API_PORT=4444 llamafactory-cli api examples/inference/qwen3_thinking.yaml```
+```API_PORT=8000 llamafactory-cli api examples/inference/qwen3_thinking.yaml```
 
 
 2. 运行 BFCL 评测
@@ -56,9 +58,9 @@ API_PORT=4444 llamafactory-cli api \
 
 ```
 llamafactory-cli bfcl \
-    --model_name_or_path /path/to/model \
+    --model_name_or_path /path/to/model-FC \
     --bfcl_category multiple \
-    --bfcl_port 4444 \
+    --bfcl_port 8000 \ # 可选，默认端口 8000
     --bfcl_stage all  # 可选，默认就是 all
 ```
 
@@ -66,9 +68,9 @@ llamafactory-cli bfcl \
 第一步：生成响应
 ```
 llamafactory-cli bfcl \
-    --model_name_or_path /path/to/model \
+    --model_name_or_path /path/to/model-FC \
     --bfcl_category multiple \
-    --bfcl_port 4444 \
+    --bfcl_port 8000 \
     --bfcl_stage generate
 ```
 
@@ -76,7 +78,7 @@ llamafactory-cli bfcl \
 
 ```
 llamafactory-cli bfcl \
-    --model_name_or_path /path/to/model \
+    --model_name_or_path /path/to/model-FC \
     --bfcl_category multiple \
     --bfcl_stage evaluate
 ```
